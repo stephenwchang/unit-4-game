@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <title>RPG Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="">
+  </head>
+  <body>
+    <p>Open console to see fight log. Click on a character and then pick an enemy.</p>
+    <div class="character-container"> Your Character
+        <div class="character-button" id="c1">Char 1</div>
+        <div class="character-button" id="c2">Char 2</div>
+        <div class="character-button" id="c3">Char 3</div>
+        <div class="character-button" id="c4">Char 4</div>
+    </div>
+
+    <div class="enemies">Enemies available to attack</div>
+    <div class="fight-section">Fight Section</div>
+    <div class="defender">Defender</div>
+    <button id="attack-button">Attack!</button>
+
+    <script type="text/javascript">
+    // global variables
+    let yourPlayer, yourDefender;
+
+    let characters = [
+        char1 = {
+          name: 'char1',
+          isPlayer: false,
+          isDefender: false,
+          hp: 200,
+          ap: 5,
+          // maybe declare baseap = yourPlayer.ap somewhere in document instead of declaring baseap for each character object
+          baseap: 5,
+          cap: 3,
+        },
+
+        char2 = {
+          name: 'char2',
+          isPlayer: false,
+          isDefender: false,
+          hp: 150,
+          ap: 7,
+          baseap: 7,
+          cap: 4
+        },
+
+        char3 = {
+          name: 'char3',
+          isPlayer: false,
+          isDefender: false,
+          hp: 125,
+          ap: 10,
+          baseap: 10,
+          cap: 5
+        },
+
+        char4 = {
+          name: 'char4',
+          isPlayer: false,
+          isDefender: false,
+          hp: 175,
+          ap: 6,
+          baseap: 6,
+          cap: 4
+        },
+      ]
+
+    $(document).ready(function() {
+      // initial click function to select your player
+      $('.character-button').on('click', function() {
+        let charID = this.id;
+        // user can only select one player
+        if (!char1.isPlayer && !char2.isPlayer && !char3.isPlayer && !char4.isPlayer) {
+          if (charID === 'c1') {
+            char1.isPlayer = true;
+            yourPlayer = char1;
+            $('.enemies').append($('#c2'), $('#c3'), $('#c4'));
+          } else if (charID === 'c2') {
+            char2.isPlayer = true;
+            yourPlayer = char2;
+            $('.enemies').append($('#c1'), $('#c3'), $('#c4'));
+          } else if (charID === 'c3') {
+            char3.isPlayer = true;
+            yourPlayer = char3;
+            $('.enemies').append($('#c1'), $('#c2'), $('#c4'));
+          } else if (charID === 'c4') {
+            char4.isPlayer = true;
+            yourPlayer = char4;
+            $('.enemies').append($('#c1'), $('#c2'), $('#c3'));
+          }
+        }
+        // selecting a defender: checks if a player has already been selected, and that there are currently no defenders already
+        if ((char1.isPlayer || char2.isPlayer || char3.isPlayer || char4.isPlayer) && (!char1.isDefender && !char2.isDefender && !char3.isDefender && !char4.isDefender)){
+          if (charID === 'c1' && !char1.isPlayer) {
+            char1.isDefender = true;
+            yourDefender = char1;
+            $('.defender').append($('#c1'));
+          }
+          if (charID === 'c2' && !char2.isPlayer) {
+            char2.isDefender = true;
+            yourDefender = char2;
+            $('.defender').append($('#c2'));
+          }
+          if (charID === 'c3' && !char3.isPlayer) {
+            char3.isDefender = true;
+            yourDefender = char3;
+            $('.defender').append($('#c3'));
+          }
+          if (charID === 'c4' && !char4.isPlayer) {
+            char4.isDefender = true;
+            yourDefender = char4;
+            $('.defender').append($('#c4'));
+          }
+        }
+      });
+
+      // attack button function
+      $('#attack-button').on('click', function() {
+        if (yourDefender.hp > 0) {
+          yourDefender.hp = yourDefender.hp - yourPlayer.ap;
+          console.log('your defender hp: ' + yourDefender.hp);
+          yourPlayer.hp = yourPlayer.hp - yourDefender.cap;
+          console.log('your player hp: ' + yourPlayer.hp);
+          yourPlayer.ap = yourPlayer.ap + yourPlayer.baseap;
+          console.log('your player ap is now ' + yourPlayer.ap);
+          // when enemy hp is depleted
+          if (yourDefender.hp < 1) {
+            window.alert('you have defeated the current defender');
+              if (char1.isDefender) {
+                $('#c1').remove();
+                char1.isDefender = false;
+              }
+              if (char2.isDefender) {
+                $('#c2').remove();
+                char2.isDefender = false;
+              }
+              if (char3.isDefender) {
+                $('#c3').remove();
+                char3.isDefender = false;
+              }
+              if (char4.isDefender) {
+                $('#c4').remove();
+                char4.isDefender = false;
+              }
+          }
+          if (yourPlayer.hp < 1) {
+            window.alert('you have been defeated');
+          }
+        }
+      });
+
+    });
+    </script>
+  </body>
+</html>
